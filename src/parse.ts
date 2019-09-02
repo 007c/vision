@@ -7,7 +7,7 @@ export interface AstElement {
 }
 
 const matchStart = /^<(\w+)\s*/;
-const matchAttrs = /^([^<>]+)\s*=\s*['"]([^<>]*)['"]\s+/;
+const matchAttrs = /^([^<=>]+)\s*=\s*['"]([^<=>]*)['"]/;
 const matchAttrsWithoutWhite = /([^<>]+)\s*=\s*['"]([^<>]*)['"]/;
 const matchInnerText = /([^<]*)/;
 const matchStartTagEnd = /^\s*>/;
@@ -39,7 +39,7 @@ export function parse(html: string): AstElement {
         if (startMatch) {
             processStart(startMatch);
             let match;
-            while (match = html.match(/^([^<=>]+)\s*=\s*['"]([^<=>]*)['"]/)) {
+            while (match = html.match(matchAttrs)) {
                 processAttrs(match);
             }
         }

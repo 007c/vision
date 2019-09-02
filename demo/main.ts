@@ -1,4 +1,4 @@
-import Vision from './src/index'
+import Vision from '../src/index'
 
 var html = `<div *click="changeName" class='hahaha'>
             <span>{{num}}{{person.name}}</span>

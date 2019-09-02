@@ -1,7 +1,8 @@
 import Vision from '../src/index'
 
-var html = `<div *click="changeName" class="hahaha">
-            <input type="text">
+var html = `<div vi-class="className + 'aaa'" *click="changeName" class="hahaha">
+            <input type="text" *input="onClassNameChange" vi-value="className">
+            {{className}}
             <textarea name="" id="" cols="30" rows="10"></textarea>
             <br><br><br>
             <span>{{num}}{{person.name}}</span>
@@ -16,6 +17,7 @@ const vision = new Vision({
     template: html,
     data() {
         return {
+            className: "city",
             name: 'zzp',
             num: 15,
             person: { name: 'ehahah', diss: { a: 1 } }
@@ -36,7 +38,7 @@ const vision = new Vision({
             },
             components: {
                 time: {
-                    template: "<div style='color: red'>{{date}}</div>",
+                    template: "<div style='color: red' >{{date}}</div>",
                     data() {
                         return {
                             date: new Date().toLocaleTimeString(),
@@ -59,6 +61,9 @@ const vision = new Vision({
     },
     methods: {
         changeName() {
+        },
+        onClassNameChange(event: Event) {
+            this.className = (<HTMLInputElement>event.target).value;
         }
     }
 });

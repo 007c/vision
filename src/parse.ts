@@ -3,7 +3,8 @@ export interface AstElement {
     attrs?: { [prop: string]: string };
     children?: AstElement[];
     text?: string;
-    events?: { [prop: string]: string }
+    events?: { [prop: string]: string };
+    dynamicAttrs?: { [prop: string]: string };
 }
 
 const matchStart = /^<(\w+)\s*/;
@@ -22,6 +23,9 @@ const createAstElement = function (tag: string = "", text?: string): AstElement 
     return {
         tag,
         text,
+        attrs: {},
+        events: {},
+        dynamicAttrs: {}
     }
 }
 
@@ -82,11 +86,13 @@ export function parse(html: string): AstElement {
         let [matched, name, value] = match;
         name = name.trim();
         value = value.trim();
-        const attrs = curentAstElement.attrs || (curentAstElement.attrs = {});
-        const events = curentAstElement.events || (curentAstElement.events = {});
+        const { attrs, events, dynamicAttrs } = curentAstElement;
         const eventMatch = name.match(matchEventAttrs);
+        const dynamicAttrsMatch = name.match(/^vi-(.+)/)
         if (eventMatch) {
             events[eventMatch[1]] = value
+        } else if (dynamicAttrsMatch) {
+            dynamicAttrs[dynamicAttrsMatch[1]] = value;
         } else {
             attrs[name] = value;
 

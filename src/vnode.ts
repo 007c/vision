@@ -4,7 +4,7 @@ export interface Vnode {
     tag?: string;
     attrs?: { [props: string]: string };
     children: Vnode[];
-    key?: number;
+    key?: any;
     text?: string;
     isComment: boolean;
     elm?: HTMLElement | Node;
@@ -16,21 +16,21 @@ export interface Vnode {
 
 export function createVnode(
     tag: string,
-    children: Vnode[],
-    data: {
+    children?: Vnode[],
+    data?: {
         attrs: { [props: string]: string },
         key: number,
         text: string,
         events: { [props: string]: EventListener },
     }
 ): Vnode {
-    const { attrs, key, text, events } = data;
+    const { attrs = undefined, text = undefined, events = undefined } = data || {};
     const vnode: Vnode = {
         tag,
         attrs: attrs || {},
-        events: data.events,
+        events: events,
         children,
-        key,
+        key: attrs ? attrs.key : undefined,
         text,
         isComment: false
     }

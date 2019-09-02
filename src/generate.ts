@@ -1,10 +1,5 @@
 import { AstElement } from './parse';
 
-export interface VnodeData {
-    attrs?: { [props: string]: string },
-    text?: string;
-    key?: any;
-}
 
 function normalizeText(text: string): string {
     const bracketsReg = /{{([^{{]*)}}/;
@@ -43,13 +38,35 @@ const genEvents = function (events: { [props: string]: string }): string {
     return eventStr.slice(0, -1);
 }
 
+const genAttrs = function (attrs: { [props: string]: string }, dynamicAttrs: { [props: string]: string }): string {
+    let attrStr = "";
+
+    const attrKeys = Object.keys(attrs), dynamicAttrsKeys = Object.keys(dynamicAttrs);
+
+    for (const key of dynamicAttrsKeys) {
+        if (attrs[key]) {
+            attrStr += `${key}:'${attrs[key]}' + ' ' + ${dynamicAttrs[key]},`
+            attrs[key] = undefined;
+        } else {
+            attrStr += `${key}:${dynamicAttrs[key]},`
+        }
+    }
+
+    for (const key of attrKeys) {
+        if (attrs[key] !== undefined) {
+            attrStr += `${key}:'${attrs[key]}',`
+        }
+    }
+
+    return `{${attrStr.slice(0, -1)}}`
+}
+
 const genData = function (ast: AstElement): string {
     let data = "";
 
-    if (ast.attrs) {
-        data += `attrs:${JSON.stringify(ast.attrs)},`;
+    if (ast.attrs || ast.dynamicAttrs) {
+        data += `attrs: ${genAttrs(ast.attrs, ast.dynamicAttrs)},`;
     }
-
 
     if (ast.text) {
         data += `text:${normalizeText(ast.text)},`;
@@ -62,6 +79,7 @@ const genData = function (ast: AstElement): string {
     return `{${data}}`;
 }
 
+
 export function generate(ast: AstElement): string {
     let res = ast ? "_c(" : "_c('div')";
     if (ast.tag) {
@@ -69,7 +87,6 @@ export function generate(ast: AstElement): string {
     } else {
         res += `"",`
     }
-
     if (ast.children) {
         res += '[';
         for (let child of ast.children) {
@@ -81,10 +98,7 @@ export function generate(ast: AstElement): string {
     } else {
         res += `[],`;
     }
-
-
-    const data: VnodeData = {};
-
     res += `${genData(ast)},`;
+
     return res.slice(0, -1) + ')';
 }

@@ -7,12 +7,16 @@ export interface AstElement {
 }
 
 const matchStart = /^<(\w+)\s*/;
-const matchAttrs = /(.+)=['"](.+)['"]\s+/;
-const matchAttrsWithoutWhite = /(.+)=['"](.+)['"]/;
+const matchAttrs = /^([^<>]+)\s*=\s*['"]([^<>]*)['"]\s+/;
+const matchAttrsWithoutWhite = /([^<>]+)\s*=\s*['"]([^<>]*)['"]/;
 const matchInnerText = /([^<]*)/;
-const matchStartTagEnd = /^>/;
-const matchEndTag = /^<\/.+>/
+const matchStartTagEnd = /^\s*>/;
+const matchEndTag = /^<\/(.+)>/
 const matchEventAttrs = /^\*(\w+)/
+
+const buildInSingleTags: Set<string> = new Set(['area', 'base', 'br', 'col', 'embed', 'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
+
+const isSingleTag = (tag: string): boolean => buildInSingleTags.has(tag);
 
 const createAstElement = function (tag: string = "", text?: string): AstElement {
     return {
@@ -35,14 +39,14 @@ export function parse(html: string): AstElement {
         if (startMatch) {
             processStart(startMatch);
             let match;
-            while (match = html.match(matchAttrs) || html.match(matchAttrsWithoutWhite)) {
+            while (match = html.match(/^([^<=>]+)\s*=\s*['"]([^<=>]*)['"]/)) {
                 processAttrs(match);
             }
         }
-
-        if (html.match(matchStartTagEnd)) {
+        const startTagEndMatch = html.match(matchStartTagEnd)
+        if (startTagEndMatch) {
             parent = stack[stack.length - 1];
-            html = html.slice(1);
+            html = html.slice(startTagEndMatch[0].length);
         }
 
         const textMatch = html.match(matchInnerText);
@@ -69,11 +73,15 @@ export function parse(html: string): AstElement {
             let children = parent.children || (parent.children = []);
             children.push(curentAstElement);
         }
-        stack.push(curentAstElement);
+        if (!isSingleTag(tag)) {
+            stack.push(curentAstElement);
+        }
     }
 
     function processAttrs(match: string[]) {
-        const [matched, name, value] = match;
+        let [matched, name, value] = match;
+        name = name.trim();
+        value = value.trim();
         const attrs = curentAstElement.attrs || (curentAstElement.attrs = {});
         const events = curentAstElement.events || (curentAstElement.events = {});
         const eventMatch = name.match(matchEventAttrs);

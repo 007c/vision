@@ -1,6 +1,9 @@
 import Vision from '../src/index'
 
-var html = `<div *click="changeName" class='hahaha'>
+var html = `<div *click="changeName" class="hahaha">
+            <input type="text">
+            <textarea name="" id="" cols="30" rows="10"></textarea>
+            <br><br><br>
             <span>{{num}}{{person.name}}</span>
                 my name is{{name}}
             <test></test>
@@ -21,6 +24,7 @@ const vision = new Vision({
     components: {
         test: {
             template: `<span *click='changeTestName'>
+                            time.now 
                             <time></time>
                             {{"hahaha"}} 
                             {{testName}}
@@ -32,7 +36,7 @@ const vision = new Vision({
             },
             components: {
                 time: {
-                    template: "<div style='color: red'>time.now {{date}} {{person.name}} lalala</div>",
+                    template: "<div style='color: red'>{{date}}</div>",
                     data() {
                         return {
                             date: new Date().toLocaleTimeString(),
@@ -49,14 +53,12 @@ const vision = new Vision({
             },
             methods: {
                 changeTestName() {
-                    this.testName = "i changed testName"
                 },
             },
         },
     },
     methods: {
         changeName() {
-            this.name = Math.random() + 12;
         }
     }
 });

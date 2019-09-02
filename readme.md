@@ -1,2 +1,2 @@
 ## Vue-toy
-*A toy -liked Library writed by typescript*
+*A toy vue-liked Library writed by typescript*

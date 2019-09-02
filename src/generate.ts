@@ -6,30 +6,32 @@ export interface VnodeData {
     key?: any;
 }
 
-function normalizeText(text: string) {
-    const bracketsReg = /{{(.*)}}/;
+function normalizeText(text: string): string {
+    const bracketsReg = /{{([^{{]*)}}/;
     const lineBreakRE = /[\r\n]/g;
     text = text.replace(lineBreakRE, ' ');
-    const bracketMatch = text.match(/{{(.*)}}/);
+    let bracketMatch = text.match(bracketsReg);
     if (!bracketMatch) {
         return `'${text}'`;
     }
-
-    let replaceStr = bracketMatch[1];
-    let inEnd = true;
-    let inStart = true;
-
-    if (bracketMatch.index !== 0) {
-        replaceStr = "'+" + replaceStr;
-        inStart = false;
+    const texts: string[] = [];
+    while (bracketMatch) {
+        let startIndex = bracketMatch.index, lastIndex = 0;
+        if (startIndex > lastIndex) {
+            texts.push(`'${text.slice(lastIndex, startIndex)}'`);
+        }
+        texts.push(bracketMatch[1]);
+        lastIndex = startIndex + bracketMatch[0].length;
+        text = text.slice(lastIndex)
+        bracketMatch = text.match(bracketsReg);
     }
 
-    if (bracketMatch.index + bracketMatch[1].length !== text.length) {
-        replaceStr += "+'"
-        inEnd = false;
+    if (text) {
+        texts.push(`'${text}'`);
     }
 
-    return `${inStart ? '' : "'"}${text.replace(bracketsReg, replaceStr)}` + (inEnd ? '' : "'");
+    return texts.join("+");
+
 }
 
 const genEvents = function (events: { [props: string]: string }): string {

@@ -20,6 +20,7 @@ export function observer(_data: any) {
     return defineProxy(_data);
 }
 
+const hasOwn = Object.prototype.hasOwnProperty;
 
 export function defineProxy(target: any): ProxyConstructor | any {
     if (typeof target !== 'object' || target == null) {
@@ -34,7 +35,7 @@ export function defineProxy(target: any): ProxyConstructor | any {
                 dep.depend();
             }
 
-            if (tar.hasOwnProperty(name)) {
+            if (hasOwn.call(tar, name)) {
                 return tar[name]
             }
         },

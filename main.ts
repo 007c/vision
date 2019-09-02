@@ -1,7 +1,7 @@
 import Vision from './src/index'
 
 var html = `<div *click="changeName" class='hahaha'>
-            <span>{{num}}</span>
+            <span>{{num}}{{person.name}}</span>
                 my name is{{name}}
             <test></test>
             </div>`
@@ -31,15 +31,17 @@ const vision = new Vision(app, {
             },
             components: {
                 time: {
-                    template: "<div style='color: red'>time.now {{date}}</div>",
+                    template: "<div style='color: red'>time.now {{date}} {{person.name}} lalala</div>",
                     data() {
                         return {
-                            date: new Date().toLocaleTimeString()
+                            date: new Date().toLocaleTimeString(),
+                            person: {}
                         }
                     },
                     mounted() {
                         setInterval(() => {
                             this.date = new Date().toLocaleTimeString();
+                            this.person.name = Math.floor(Math.random() * 10)
                         }, 300)
                     }
                 }

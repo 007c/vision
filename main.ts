@@ -22,6 +22,7 @@ const vision = new Vision(app, {
         test: {
             template: `<span *click='changeTestName'>
                             <time></time>
+                            {{"hahaha"}} 
                             {{testName}}
                         </span>`,
             data() {

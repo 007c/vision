@@ -63,7 +63,6 @@ export default class Vision {
             try {
                 this.update(el, this._render())
             } catch (ex) {
-                console.log(ex.message)
             }
         });
 

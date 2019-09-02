@@ -8,7 +8,7 @@ export interface VnodeData {
 
 function normalizeText(text: string): string {
     const bracketsReg = /{{([^{{]*)}}/;
-    const lineBreakRE = /[\r\n]/g;
+    const lineBreakRE = /[\r\n\s]+/g;
     text = text.replace(lineBreakRE, ' ');
     let bracketMatch = text.match(bracketsReg);
     if (!bracketMatch) {

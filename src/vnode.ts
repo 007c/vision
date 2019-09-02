@@ -65,7 +65,7 @@ export function cloneVnode(node: Vnode): Vnode {
 export function render(parentElm: HTMLElement, vnode: Vnode) {
 
     if (vnode.isComponent) {
-        const child = new Vision(parentElm, vnode.componentOptions);
+        const child = new Vision(vnode.componentOptions);
         child.$mount(parentElm)
         const childVnode = child._vnode;
         vnode.attrs = childVnode.attrs;

@@ -36,7 +36,9 @@ function updateAttrs(patch: Patch) {
         const attrKeys = Object.keys(newAttrs);
         const oldAttrKeys = Object.keys(oldAttrs);
         for (const key of attrKeys) {
-            node.setAttribute(key, newAttrs[key]);
+            if (!oldAttrs[key] || oldAttrs[key] !== newAttrs[key]) {
+                node.setAttribute(key, newAttrs[key]);
+            }
         }
 
         for (const key of oldAttrKeys) {

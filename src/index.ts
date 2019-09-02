@@ -42,7 +42,7 @@ export default class Vision {
     public _vnode: Vnode;
     private _render: Function;
     $options: Options;
-    constructor(elm: HTMLElement, options: Options) {
+    constructor(options: Options) {
         this.$options = mergeOptions(options);
         this.init(options);
     }

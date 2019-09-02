@@ -9,7 +9,7 @@ var html = `<div *click="changeName" class='hahaha'>
 
 const app: HTMLElement = document.getElementById("app")
 
-const vision = new Vision(app, {
+const vision = new Vision({
     template: html,
     data() {
         return {

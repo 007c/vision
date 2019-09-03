@@ -1,13 +1,13 @@
 import Vision from '../src/index'
 
 var html = `<div vi-class="className + 'aaa'" *click="changeName" class="hahaha">
-            <input type="text" *input="onClassNameChange" vi-value="className">
-            {{className}}
-            <textarea name="" id="" cols="30" rows="10"></textarea>
-            <br><br><br>
-            <span>{{num}}{{person.name}}</span>
-                my name is{{name}}
-            <test></test>
+                <input type="text" *input="onClassNameChange" vi-value="className">
+                {{className}}
+                <textarea name="" id="" cols="30" rows="10"></textarea>
+                <br><br><br>
+                <span>{{num}}{{person.name}}</span>
+                    my name is{{name}}
+                <test></test>
             </div>`
 
 
@@ -46,10 +46,10 @@ const vision = new Vision({
                         }
                     },
                     mounted() {
-                        setInterval(() => {
-                            this.date = new Date().toLocaleTimeString();
-                            this.person.name = Math.floor(Math.random() * 10)
-                        }, 300)
+                        // setInterval(() => {
+                        //     this.date = new Date().toLocaleTimeString();
+                        //     this.person.name = Math.floor(Math.random() * 10)
+                        // }, 300)
                     }
                 }
             },
@@ -61,6 +61,11 @@ const vision = new Vision({
     },
     methods: {
         changeName() {
+            this.person = {name: '---------changed person--------'};
+            setTimeout(()=> {
+                this.person = {name: "---------changed person again!--------"}
+                this.person.name = ".....reset name....."
+            }, 3000)
         },
         onClassNameChange(event: Event) {
             this.className = (<HTMLInputElement>event.target).value;

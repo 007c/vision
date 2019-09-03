@@ -50,7 +50,7 @@ export function defineProxy(target: any): ProxyConstructor | any {
         },
         set(tar: any, name, newVal) {
             if (newVal !== tar[name]) {
-                tar[name] = newVal;
+                tar[name] = observer(newVal);
                 dep.notify();
             }
             return true;

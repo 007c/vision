@@ -16,7 +16,7 @@ export class Dep {
 
     public notify() {
         for (const watcher of this.watchers) {
-            watcher.run();
+            watcher.update();
         }
     }
 }

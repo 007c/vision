@@ -40,7 +40,8 @@ const queueWatcher = function (watcher: Watcher) {
         flushing = true;
         updateQueue.push(watcher);
     } else {
-        //it's already have a running update queue, we need push it to right position;
+        // it's already have a running update queue, we need push it to right position;
+        // basicly a new wathcer be pushed will run immediely 
         let i = updateQueue.length - 1;
         if (i > runIndex && updateQueue[i].id > watcher.id) {
             i--;

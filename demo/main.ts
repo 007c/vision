@@ -65,6 +65,9 @@ const vision = new Vision({
                 },
             },
             mounted() {
+                this.$on('nameChange', ()=> {
+                    console.log('test component emit event "nameChange"')
+                })
                 console.log("test mounted")
             }
         },

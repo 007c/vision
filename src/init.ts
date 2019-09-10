@@ -1,9 +1,9 @@
 
 import Vision, { Options } from "./index";
-import { defineProxy, observer } from './observe';
+import { defineProxy, observe } from './observe';
 const initData = function (vi: any, data: object | (() => object)) {
     const _data = typeof data === "function" ? data() : data;
-    observer(_data);
+    observe(_data);
     for (const key of Object.keys(_data)) {
         vi[key] = defineProxy(_data[key]);
     }

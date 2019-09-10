@@ -1,19 +1,19 @@
 import { isPlainObject } from './utils';
 import { Dep } from './dep';
-export function observer(_data: any) {
+export function observe(_data: any): ProxyConstructor | any {
     if (!isPlainObject(_data) && !Array.isArray(_data)) {
         return _data;
     }
 
     if (Array.isArray(_data)) {
         _data.forEach((item, index) => {
-            _data[index] = observer(item);
+            _data[index] = observe(item);
         })
     }
 
     if (isPlainObject(_data)) {
         for (const key of Object.keys(_data)) {
-            _data[key] = observer(_data[key]);
+            _data[key] = observe(_data[key]);
         }
     }
 
@@ -47,7 +47,7 @@ export function defineProxy(target: any): ProxyConstructor | any {
         },
         set(tar: any, name, newVal) {
             if (newVal !== tar[name]) {
-                tar[name] = observer(newVal);
+                tar[name] = observe(newVal);
                 dep.notify();
             }
             return true;

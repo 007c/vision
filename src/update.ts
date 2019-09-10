@@ -28,9 +28,14 @@ function inserBefore(parent: HTMLElement | Node, patch: Patch) {
 }
 
 function updateAttrs(patch: Patch) {
-    let node = patch.newVnode.elm;
+    const { oldVnode, newVnode } = patch;
+    if (newVnode.isComponent) {
+        // todo 
+        // need supply component props and props update
+        return;
+    }
+    let node = newVnode.elm;
     if (node instanceof HTMLElement) {
-        const { oldVnode, newVnode } = patch;
         const oldAttrs = oldVnode ? oldVnode.attrs : {};
         const newAttrs = newVnode.attrs;
         const attrKeys = Object.keys(newAttrs);
@@ -53,6 +58,9 @@ function updateAttrs(patch: Patch) {
 }
 
 function updateEvents(oldVnode: Vnode, newVnode: Vnode) {
+    if (newVnode.isComponent) {
+        return;
+    }
     if (newVnode.elm instanceof HTMLElement) {
         const oldEvents = (oldVnode && oldVnode.events) || {}, newEvents = newVnode.events || {};
         for (const key of Object.keys(newEvents)) {

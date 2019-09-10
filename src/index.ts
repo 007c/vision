@@ -4,7 +4,8 @@ import { parse } from "./parse";
 import { update } from './update';
 import { createVnode, Vnode } from "./vnode";
 import { Watcher } from "./watcher";
-import { initState } from './init'
+import { initState, initComponentEvents } from './init'
+import EventEmitter from "./event-emitter";
 
 export interface Options {
     template: string;
@@ -35,14 +36,16 @@ const mergeOptions = function (options: Options) {
 
 
 
-export default class Vision {
+export default class Vision extends EventEmitter {
     _data?: { [prop: string]: ProxyConstructor | any };
     _vi: ProxyConstructor;
-    private $el: HTMLElement
+    public $el: HTMLElement
     public _vnode: Vnode;
     private _render: Function;
+    public $children: Vision[] = [];
     $options: Options;
     constructor(options: Options) {
+        super();
         this.$options = mergeOptions(options);
         this.init(options);
     }
@@ -65,7 +68,6 @@ export default class Vision {
             } catch (ex) {
             }
         });
-
 
         if (options.mounted) {
             options.mounted.apply(this._vi);

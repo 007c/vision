@@ -33,9 +33,9 @@ export function defineProxy(target: any): ProxyConstructor | any {
         has(tar: any, key): boolean {
             const has = key in tar;
             if (!has) {
-                console.error('Property ', key, "is not defined on instance but used in template or something else,\n" ,
-                "make sure you data or props is right defined or look up vision api to make right instance property use!\n",
-                "note vision allows you use property if not exists in objects but still need define a root on data.")
+                console.error('Property ', key, "is not defined on instance but used in template or something else,\n",
+                    "make sure you data or props is right defined or look up vision api to make right instance property use!\n",
+                    "note vision allows you use property if not exists in objects but still need define a root on data.")
             }
             return has
         },
@@ -43,10 +43,7 @@ export function defineProxy(target: any): ProxyConstructor | any {
             if (Dep.target) {
                 dep.depend();
             }
-
-            if (hasOwn.call(tar, name)) {
-                return tar[name]
-            }
+            return tar[name]
         },
         set(tar: any, name, newVal) {
             if (newVal !== tar[name]) {

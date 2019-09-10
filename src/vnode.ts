@@ -1,5 +1,6 @@
 import { createTextNode, createElement } from './utils';
 import Vision, { Options } from "./index";
+import { initComponentEvents } from "./init";
 export interface Vnode {
     tag?: string;
     attrs?: { [props: string]: string };
@@ -12,6 +13,7 @@ export interface Vnode {
     isComponent?: boolean;
     componentOptions?: Options;
     componentInstance?: Vision;
+    parentComponent?: Vision;
 }
 
 export function createVnode(
@@ -38,6 +40,7 @@ export function createVnode(
     if (this.$options.components && this.$options.components[tag]) {
         vnode.isComponent = true;
         vnode.componentOptions = this.$options.components[tag];
+        vnode.parentComponent = this;
     }
 
     return vnode;
@@ -67,11 +70,14 @@ export function render(parentElm: HTMLElement, vnode: Vnode) {
     if (vnode.isComponent) {
         const child = new Vision(vnode.componentOptions);
         child.$mount(parentElm)
+        initComponentEvents(child, vnode.events);
+        vnode.parentComponent && vnode.parentComponent.$children.push(child);
+
         const childVnode = child._vnode;
         vnode.attrs = childVnode.attrs;
         // vnode.children = childVnode.children;
         vnode.text = childVnode.text;
-        vnode.elm = childVnode.elm;
+        vnode.elm = child.$el;
         vnode.componentInstance = child;
         return
     }

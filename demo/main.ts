@@ -7,7 +7,7 @@ var html = `<div vi-class="className + 'aaa'" *click="changeName" class="hahaha"
                 <br><br><br>
                 <span>{{num}}{{person.name}}</span>
                     my name is{{name}}
-                <test></test>
+                <test *nameChange="onNameChange"></test>
             </div>`
 
 
@@ -46,6 +46,7 @@ const vision = new Vision({
                         }
                     },
                     mounted() {
+                        console.log("time mounted")
                         // setInterval(() => {
                         //     this.date = new Date().toLocaleTimeString();
                         //     this.person.name = Math.floor(Math.random() * 10)
@@ -54,22 +55,40 @@ const vision = new Vision({
                 }
             },
             methods: {
+                doOthers() {
+
+                },
                 changeTestName() {
+                    console.log(this);
+                    this.testName = "i am new Test Name";
+                    this.$emit('nameChange', this.testName)
                 },
             },
+            mounted() {
+                console.log("test mounted")
+            }
         },
     },
     methods: {
+        onNameChange(newName: string) {
+            console.log(newName)
+        },
         changeName() {
-            this.person = {name: '---------changed person--------'};
-            setTimeout(()=> {
-                this.person = {name: "---------changed person again!--------"}
+            this.person = { name: '---------changed person--------' };
+            setTimeout(() => {
+                this.person = { name: "---------changed person again!--------" }
                 this.person.name = ".....reset name....."
+                setTimeout(() => {
+                    this.person.name = "-----final name-----"
+                })
             }, 3000)
         },
         onClassNameChange(event: Event) {
             this.className = (<HTMLInputElement>event.target).value;
         }
+    },
+    mounted() {
+        console.log("root mounted")
     }
 });
 

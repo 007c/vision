@@ -9,7 +9,7 @@ const initData = function (vi: any, data: object | (() => object)) {
     }
 }
 
-const toBoundFn = function (fn: Function, context: Vision): Function {
+const toBoundFn = function (fn: Function, context: ProxyConstructor): Function {
     return function bound() {
         const args = [].slice.call(arguments);
         return fn.apply(context, args);
@@ -35,5 +35,19 @@ export function initState(vi: Vision, options: Options) {
 
     if (options.methods) {
         initMethods(vi)
+    }
+}
+
+export function initComponentEvents(vi: Vision, events: { [props: string]: EventListener }) {
+    if (!events) {
+        return;
+    }
+    const eventNames = Object.keys(events);
+    for (const name of eventNames) {
+        if (!vi._events[name]) {
+            vi._events[name] = [];
+        }
+
+        vi._events[name].push(toBoundFn(events[name], vi._vi));
     }
 }

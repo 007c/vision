@@ -7,6 +7,12 @@ import { Watcher } from "./watcher";
 import { initState, initComponentEvents } from './init'
 import EventEmitter from "./event-emitter";
 
+
+
+declare global {
+    interface Dict<T> { [props: string]: T }
+}
+
 export interface Options {
     template: string;
     render?: Function;

@@ -3,13 +3,13 @@ import Vision, { Options } from "./index";
 import { initComponentEvents } from "./init";
 export interface Vnode {
     tag?: string;
-    attrs?: { [props: string]: string };
+    attrs?: Dict<string>;
     children: Vnode[];
     key?: any;
     text?: string;
     isComment: boolean;
     elm?: HTMLElement | Node;
-    events?: { [props: string]: EventListener };
+    events?: Dict<EventListener>;
     isComponent?: boolean;
     componentOptions?: Options;
     componentInstance?: Vision;
@@ -20,10 +20,10 @@ export function createVnode(
     tag: string,
     children?: Vnode[],
     data?: {
-        attrs: { [props: string]: string },
+        attrs: Dict<string>,
         key: number,
         text: string,
-        events: { [props: string]: EventListener },
+        events: Dict<EventListener>,
     }
 ): Vnode {
     const { attrs = undefined, text = undefined, events = undefined } = data || {};

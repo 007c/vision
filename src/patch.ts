@@ -15,14 +15,12 @@ export interface Patch {
     parentVNode?: Vnode
 }
 
-interface Dict { [props: string]: number }
-
 function isSameVnode(oldVnode: Vnode, newVnode: Vnode) {
     return oldVnode.tag === newVnode.tag && oldVnode.key === newVnode.key;
 }
 
-function createKeyMap(vnodes: Vnode[]): Dict {
-    let dict: Dict = {};
+function createKeyMap(vnodes: Vnode[]): Dict<number> {
+    let dict: Dict<number> = {};
     vnodes.forEach((node: Vnode, index: number) => {
         dict[node.key] = index;
     })

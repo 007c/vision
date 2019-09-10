@@ -29,7 +29,7 @@ function normalizeText(text: string): string {
 
 }
 
-const genEvents = function (events: { [props: string]: string }): string {
+const genEvents = function (events: Dict<string>): string {
     let eventStr = "";
     for (let key of Object.keys(events)) {
         eventStr += `${key}: ${events[key]},`
@@ -38,7 +38,7 @@ const genEvents = function (events: { [props: string]: string }): string {
     return eventStr.slice(0, -1);
 }
 
-const genAttrs = function (attrs: { [props: string]: string }, dynamicAttrs: { [props: string]: string }): string {
+const genAttrs = function (attrs: Dict<string>, dynamicAttrs: Dict<string>): string {
     let attrStr = "";
 
     const attrKeys = Object.keys(attrs), dynamicAttrsKeys = Object.keys(dynamicAttrs);

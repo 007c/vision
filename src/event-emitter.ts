@@ -1,6 +1,5 @@
-
 export default class EventEmitter {
-    public _events: { [eventName: string]: Array<Function> } = {};
+    public _events: Dict<Array<Function>> = {};
     $on(eventName: string, handler: Function) {
         if (!this._events[eventName]) {
             this._events[eventName] = [];

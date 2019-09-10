@@ -12,7 +12,7 @@ const updateQueue: Watcher[] = [];
 
 let flushing = false, waiting = false;
 
-let has: { [props: string]: boolean } = {};
+let has: Dict<boolean> = {};
 
 let runIndex: number;
 

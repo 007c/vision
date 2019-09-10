@@ -38,7 +38,7 @@ export function initState(vi: Vision, options: Options) {
     }
 }
 
-export function initComponentEvents(vi: Vision, events: { [props: string]: EventListener }) {
+export function initComponentEvents(vi: Vision, events: Dict<EventListener>) {
     if (!events) {
         return;
     }

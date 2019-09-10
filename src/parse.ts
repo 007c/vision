@@ -1,15 +1,15 @@
 export interface AstElement {
     tag?: string;
-    attrs?: { [prop: string]: string };
+    attrs?: Dict<string>;
     children?: AstElement[];
     text?: string;
-    events?: { [prop: string]: string };
-    dynamicAttrs?: { [prop: string]: string };
+    events?: Dict<string>;
+    dynamicAttrs?: Dict<string>;
 }
 
 const matchStart = /^<(\w+)\s*/;
 const matchAttrs = /^([^<=>]+)\s*=\s*['"]([^<=>]*)['"]/;
-const matchAttrsWithoutWhite = /([^<>]+)\s*=\s*['"]([^<>]*)['"]/;
+//const matchAttrsWithoutWhite = /([^<>]+)\s*=\s*['"]([^<>]*)['"]/;
 const matchInnerText = /([^<]*)/;
 const matchStartTagEnd = /^\s*>/;
 const matchEndTag = /^<\/(.+)>/

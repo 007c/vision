@@ -1,13 +1,12 @@
 import Vision from '../src/index'
 
-var html = `<div vi-class="className + 'aaa'" *click="toggleTest" class="hahaha">
-                <input type="text" *input="onClassNameChange" vi-value="className">
-                {{className}}
-                <textarea name="" id="" cols="30" rows="10"></textarea>
+var html = `<div>
+                eventBinding: <input type="text" *input="onClassNameChange" vi-value="className">{{className}}
                 <br><br><br>
-                <span>{{num}}{{person.name}}</span>
-                    my name is{{name}}
+                <p vi-for="(name, index) in names">{{index}}、  vi-for name is {{name}}</p>
+                    dynamic name is {{name}}
                 <test vi-if="showTest" *nameChange="onNameChange"></test>
+               <p> <button *click="toggleTest">ToggleTest</button><p>
             </div>`
 
 
@@ -21,17 +20,15 @@ const vision = new Vision({
             className: "city",
             name: 'zzp',
             num: 15,
-            person: { name: 'ehahah', diss: { a: 1 } }
+            person: { name: 'ehahah', diss: { a: 1 } },
+            names: ["a", "b", "c"]
         }
     },
     components: {
         test: {
-            template: `<span *click='changeTestName'>
-                            time.now 
-                            <time></time>
-                            {{"hahaha"}} 
-                            {{testName}}
-                        </span>`,
+            template: `<p>
+                            i am component for Test, i will toggled by vi-if directive!
+                        </p>`,
             data() {
                 return {
                     testName: 'i am test'

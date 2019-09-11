@@ -102,14 +102,23 @@ const genElement = function (ast: AstElement): string {
     return res.slice(0, -1) + ')';
 }
 
+// const genFor = function(ast: AstElement): string {
+//     let res = "_l("
+// } 
+
 export function generate(ast: AstElement): string {
     if (!ast) {
         return "_c('div')";
     }
 
+    if (ast.for && !ast.forProcessed) {
+        ast.forProcessed = true;
+        return `_l(${ast.for.target}, function(${ast.for.params[0]},${ast.for.params[1]}){return ${generate(ast)}})`
+    }
+
     if (ast.if) {
         return `${ast.if} ? ${genElement(ast)} : _c("",[],{})`
-    } else {
-        return genElement(ast);
     }
+    return genElement(ast);
+
 }

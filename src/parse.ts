@@ -1,3 +1,9 @@
+interface StructFor {
+    exp: string;
+    target: string;
+    params: string[];
+}
+
 export interface AstElement {
     tag?: string;
     attrs?: Dict<string>;
@@ -6,7 +12,8 @@ export interface AstElement {
     events?: Dict<string>;
     dynamicAttrs?: Dict<string>;
     if?: string;
-    for?: string;
+    for?: StructFor;
+    forProcessed?: boolean;
 }
 
 const matchStart = /^<(\w+)\s*/;
@@ -94,7 +101,6 @@ export function parse(html: string): AstElement {
         if (eventMatch) {
             events[eventMatch[1]] = value
         } else if (dynamicAttrsMatch) {
-            dynamicAttrs[dynamicAttrsMatch[1]] = value;
             processDynamicAttrs(dynamicAttrs, dynamicAttrsMatch[1], value);
         } else {
             attrs[name] = value;
@@ -106,9 +112,42 @@ export function parse(html: string): AstElement {
 
     function processDynamicAttrs(dynamicAttrs: Dict<string>, key: string, value: any) {
         if (isBuiltInDirs(key)) {
-            curentAstElement[key as keyof AstElement] = value;
+            processDirs(curentAstElement, key, value);
         } else {
             dynamicAttrs[key] = value;
+        }
+    }
+
+    function processFor(ast: AstElement, exp: string) {
+        exp = exp.trim();
+        const expReg = /^(\w+)\s+in\s+(\w+)$|^\(\s*(\w+)\s*,\s*(\w+)\)\s+in\s+(\w+)$/;
+        const matches = exp.match(expReg);
+        if (!matches) {
+            console.error("parseing statements ", exp, "error while compiling processing!");
+            return;
+        }
+
+        const [matched, param1, target1, param2, param3, target2] = matches;
+        let params, target;
+        if (param1) {
+            params = [param1];
+            target = target1;
+        } else {
+            params = [param2, param3];
+            target = target2;
+        }
+
+        ast.for = {
+            target,
+            params,
+            exp
+        }
+    }
+
+    function processDirs(ast: AstElement, key: string, value: string) {
+        switch (key) {
+            case "if": ast.if = value; break;
+            case "for": processFor(ast, value); break;
         }
     }
 

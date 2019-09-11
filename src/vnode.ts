@@ -16,6 +16,39 @@ export interface Vnode {
     parentComponent?: Vision;
 }
 
+export function createListVnode(target: Array<any> | Object | number, render: Function) {
+    let ret = [];
+    if (Array.isArray(target)) {
+        for (let i = 0; i < target.length; i++) {
+            ret.push(render(target[i], i))
+        }
+    } else if (typeof target === "object" && target !== null) {
+        const keys = Object.keys(target) as Array<keyof typeof target>;
+        for (const key of keys) {
+            ret.push(render(target[key], key))
+        }
+    } else if (typeof target === "number") {
+        for (let i = 0; i < target; i++) {
+            ret.push(render(i, i));
+        }
+    }
+
+    return ret;
+}
+
+const normalizeChildren = function (children: Vnode[]) {
+    let _children = [];
+    for (let child of children) {
+        if (Array.isArray(child)) {
+            _children.push(...child)
+        } else {
+            _children.push(child);
+        }
+    }
+
+    return _children;
+}
+
 export function createVnode(
     tag: string,
     children?: Vnode[],
@@ -27,6 +60,9 @@ export function createVnode(
     }
 ): Vnode {
     const { attrs = undefined, text = undefined, events = undefined } = data || {};
+
+    children = normalizeChildren(children);
+
     const vnode: Vnode = {
         tag,
         attrs: attrs || {},

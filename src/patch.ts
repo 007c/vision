@@ -22,10 +22,19 @@ function isSameVnode(oldVnode: Vnode, newVnode: Vnode) {
 function createKeyMap(vnodes: Vnode[]): Dict<number> {
     let dict: Dict<number> = {};
     vnodes.forEach((node: Vnode, index: number) => {
-        dict[node.key] = index;
+        node.key && (dict[node.key] = index)
     })
     return dict;
 }
+
+function findIdxInOldNodes(newNode: Vnode, oldStart: number, oldEnd: number, oldChildren: Vnode[]) {
+    for (let i = oldStart; i <= oldEnd; i++) {
+        if (oldChildren[i] && isSameVnode(oldChildren[i], newNode)) {
+            return i;
+        }
+    }
+}
+
 
 function patchChildren(parentVNode: Vnode, oldChildren: Vnode[], newChildren: Vnode[], patches: Patch[]) {
     const oldKeyMap = createKeyMap(oldChildren);
@@ -41,9 +50,10 @@ function patchChildren(parentVNode: Vnode, oldChildren: Vnode[], newChildren: Vn
             oldStart++;
             newStart++;
         } else {
-            const oldIdx = oldKeyMap[newNode.key];
-            oldNode = oldChildren[oldIdx];
-            if (oldNode) {
+            const oldIdx = newNode.key ? oldKeyMap[newNode.key] : findIdxInOldNodes(newNode, oldStart, oldEnd, oldChildren);
+            //
+            if (oldIdx) {
+                oldNode = oldChildren[oldIdx];
                 patches.push({
                     type: PatchType.REORDER,
                     oldVnode: oldChildren[oldStart],
@@ -51,7 +61,6 @@ function patchChildren(parentVNode: Vnode, oldChildren: Vnode[], newChildren: Vn
                 })
                 oldChildren[oldIdx] = null; //clear patched nodes;
             }
-
             newStart++;
         }
         patch(parentVNode, oldNode, newNode, patches);
@@ -91,6 +100,9 @@ export function patch(parentVNode: Vnode, oldVnode: Vnode | undefined, newVnode:
         })
     } else if (isSameVnode(oldVnode, newVnode)) {
         newVnode.elm = oldVnode.elm;
+        if (oldVnode.isComponent) {
+            newVnode.componentInstance = oldVnode.componentInstance;
+        }
         if (oldVnode.tag) {
             patches.push({
                 type: PatchType.UPDATEPROPS,
@@ -107,15 +119,17 @@ export function patch(parentVNode: Vnode, oldVnode: Vnode | undefined, newVnode:
         patchChildren(oldVnode, oldVnode.children, newVnode.children, patches);
 
     } else {
-        patches.push({
-            type: PatchType.REMOVE,
-            oldVnode,
-        })
 
         patches.push({
             parentVNode,
             type: PatchType.INSERT,
             newVnode,
+            oldVnode,
+        })
+
+        patches.push({
+            type: PatchType.REMOVE,
+            oldVnode,
         })
         patchChildren(oldVnode, oldVnode.children, newVnode.children, patches);
 

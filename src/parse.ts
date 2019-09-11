@@ -21,7 +21,7 @@ const matchAttrs = /^([^<=>]+)\s*=\s*['"]([^<=>]*)['"]/;
 //const matchAttrsWithoutWhite = /([^<>]+)\s*=\s*['"]([^<>]*)['"]/;
 const matchInnerText = /([^<]*)/;
 const matchStartTagEnd = /^\s*>/;
-const matchEndTag = /^<\/(.+)>/
+const matchEndTag = /^<\/([^>]+)>/
 const matchEventAttrs = /^\*(\w+)/
 
 const builtInSingleTags: Set<string> = new Set(['area', 'base', 'br', 'col', 'embed', 'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
@@ -67,7 +67,6 @@ export function parse(html: string): AstElement {
             processInnerText(textMatch);
         }
         const endMatch: string[] = html.match(matchEndTag);
-
         if (endMatch) {
             stack.pop();
             parent = stack[stack.length - 1];

@@ -41,12 +41,16 @@ const normalizeChildren = function (children: Vnode[]) {
     for (let child of children) {
         if (Array.isArray(child)) {
             _children.push(...child)
-        } else {
+        } else if (child !== null) {
             _children.push(child);
         }
     }
 
     return _children;
+}
+
+export function createEmptyVNode(): null {
+    return null;
 }
 
 export function createVnode(
@@ -68,7 +72,7 @@ export function createVnode(
         attrs: attrs || {},
         events: events,
         children,
-        key: attrs ? attrs.key : undefined,
+        key: data ? data.key : undefined,
         text,
         isComment: false
     }

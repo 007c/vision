@@ -65,6 +65,11 @@ const genData = function (ast: AstElement): string {
     let data = "";
 
     if (ast.attrs || ast.dynamicAttrs) {
+        if (ast.attrs.key || ast.dynamicAttrs.key) {
+            data += `key: ${ast.dynamicAttrs.key || ast.attrs.key},`
+            delete ast.attrs.key;
+            delete ast.dynamicAttrs.key;
+        }
         data += `attrs: ${genAttrs(ast.attrs, ast.dynamicAttrs)},`;
     }
 
@@ -117,7 +122,7 @@ export function generate(ast: AstElement): string {
     }
 
     if (ast.if) {
-        return `${ast.if} ? ${genElement(ast)} : _c("",[],{})`
+        return `${ast.if} ? ${genElement(ast)} : _e()`
     }
     return genElement(ast);
 

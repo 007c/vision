@@ -1,12 +1,20 @@
 import Vision from '../src/index'
 
 var html = `<div>
-                eventBinding: <input type="text" *input="onClassNameChange" vi-value="className">{{className}}
-                <br><br><br>
-                <p vi-for="(name, index) in names">{{index}}、  vi-for name is {{name}}</p>
-                    dynamic name is {{name}}
-                <test vi-if="showTest" *nameChange="onNameChange"></test>
-               <p> <button *click="toggleTest">ToggleTest</button><p>
+                <h3>event binding</h3>
+                <input type="text" *input="onClassNameChange" vi-value="className">{{className}}
+                <h3>vi-for directive</h3>
+                <p vi-key="name" vi-for="(name, index) in names">{{index}}、  vi-for name is {{name}}</p>
+                <h3>dynamic Text binding</h3>
+                dynamic name is {{name}}
+                <h3>vi-if directive</h3>
+                <p vi-if="showTest">i am the test Text for vi-if!</p>
+                <button *click="toggleTest">ToggleTest</button>
+               <h3>child Component</h3>
+               <test></test>
+               <h3>component event</h3>
+               <time *timechanged="onTimeChanged"></time>
+               <span>Time: {{time}}</span>
             </div>`
 
 
@@ -21,38 +29,35 @@ const vision = new Vision({
             name: 'zzp',
             num: 15,
             person: { name: 'ehahah', diss: { a: 1 } },
-            names: ["a", "b", "c"]
+            names: ["a", "b", "c", "d", "e", "f", "g", "h", "i"],
+            time: "",
         }
     },
     components: {
+        time: {
+            template: "<div style='color: red' ></div>",
+            data() {
+                return {
+                    date: new Date().toLocaleTimeString(),
+                    person: {}
+                }
+            },
+            mounted() {
+                setInterval(() => {
+                    this.$emit('timechanged', new Date().toLocaleTimeString());
+                }, 300)
+            },
+            destroyed() {
+                console.log('time Destroyed')
+            }
+        },
         test: {
             template: `<p>
-                            i am component for Test, i will toggled by vi-if directive!
+                            i am a child component!
                         </p>`,
             data() {
                 return {
                     testName: 'i am test'
-                }
-            },
-            components: {
-                time: {
-                    template: "<div style='color: red' >{{date}}</div>",
-                    data() {
-                        return {
-                            date: new Date().toLocaleTimeString(),
-                            person: {}
-                        }
-                    },
-                    mounted() {
-                        console.log("time mounted")
-                        // setInterval(() => {
-                        //     this.date = new Date().toLocaleTimeString();
-                        //     this.person.name = Math.floor(Math.random() * 10)
-                        // }, 300)
-                    },
-                    destroyed() {
-                        console.log('time Destroyed')
-                    }
                 }
             },
             methods: {
@@ -77,6 +82,12 @@ const vision = new Vision({
         },
     },
     methods: {
+        onTimeChanged(newTime: string) {
+            this.time = newTime;
+        },
+        shuffleNames() {
+            this.names.sort(() => -1 + Math.random() * 2);
+        },
         toggleTest() {
             this.showTest = !this.showTest;
         },

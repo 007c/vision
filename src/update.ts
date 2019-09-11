@@ -17,6 +17,9 @@ function getParent(patch: Patch): HTMLElement | Node | null {
 function insert(parentNode: HTMLElement | Node, patch: Patch) {
     if (parentNode instanceof HTMLElement) {
         const elm = render(parentNode, patch.newVnode);
+        if (patch.oldVnode) {
+            inserBefore(parentNode, patch);
+        }
     }
 }
 

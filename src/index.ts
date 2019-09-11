@@ -2,7 +2,7 @@ import { generate } from "./generate";
 
 import { parse } from "./parse";
 import { update } from './update';
-import { createVnode, Vnode, createListVnode } from "./vnode";
+import { createVnode, Vnode, createListVnode, createEmptyVNode } from "./vnode";
 import { Watcher } from "./watcher";
 import { initState } from './init'
 import EventEmitter from "./event-emitter";
@@ -64,6 +64,7 @@ export default class Vision extends EventEmitter {
     }
     private _c = createVnode;
     private _l = createListVnode;
+    private _e = createEmptyVNode;
     $mount(el: HTMLElement) {
         const options = this.$options;
         const ast = parse(options.template);

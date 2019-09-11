@@ -113,6 +113,7 @@ export function patch(parentVNode: Vnode, oldVnode: Vnode | undefined, newVnode:
         })
 
         patches.push({
+            parentVNode,
             type: PatchType.INSERT,
             newVnode,
         })

@@ -5,6 +5,8 @@ export interface AstElement {
     text?: string;
     events?: Dict<string>;
     dynamicAttrs?: Dict<string>;
+    if?: string;
+    for?: string;
 }
 
 const matchStart = /^<(\w+)\s*/;
@@ -15,10 +17,10 @@ const matchStartTagEnd = /^\s*>/;
 const matchEndTag = /^<\/(.+)>/
 const matchEventAttrs = /^\*(\w+)/
 
-const buildInSingleTags: Set<string> = new Set(['area', 'base', 'br', 'col', 'embed', 'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
-
-const isSingleTag = (tag: string): boolean => buildInSingleTags.has(tag);
-
+const builtInSingleTags: Set<string> = new Set(['area', 'base', 'br', 'col', 'embed', 'frame', 'hr', 'img', 'input', 'isindex', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'])
+const builtInDirs = new Set(["if", "for"]);
+const isSingleTag = (tag: string): boolean => builtInSingleTags.has(tag);
+const isBuiltInDirs = (dir: string): boolean => builtInDirs.has(dir);
 const createAstElement = function (tag: string = "", text?: string): AstElement {
     return {
         tag,
@@ -93,12 +95,21 @@ export function parse(html: string): AstElement {
             events[eventMatch[1]] = value
         } else if (dynamicAttrsMatch) {
             dynamicAttrs[dynamicAttrsMatch[1]] = value;
+            processDynamicAttrs(dynamicAttrs, dynamicAttrsMatch[1], value);
         } else {
             attrs[name] = value;
 
         }
 
         html = html.slice(matched.length);
+    }
+
+    function processDynamicAttrs(dynamicAttrs: Dict<string>, key: string, value: any) {
+        if (isBuiltInDirs(key)) {
+            curentAstElement[key as keyof AstElement] = value;
+        } else {
+            dynamicAttrs[key] = value;
+        }
     }
 
     function processInnerText(match: string[]) {

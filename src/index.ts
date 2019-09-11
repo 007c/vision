@@ -20,6 +20,7 @@ export interface Options {
     methods?: { [prop: string]: Function };
     components?: { [prop: string]: Options };
     mounted?: Function;
+    destroyed?: Function;
 }
 
 const toFunction = function (body: string): Function {
@@ -56,7 +57,7 @@ export default class Vision extends EventEmitter {
         this.init(options);
     }
 
-    private update = update;
+    public update = update;
 
     private init(options: Options) {
         initState(this, options);

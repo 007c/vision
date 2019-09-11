@@ -79,9 +79,8 @@ const genData = function (ast: AstElement): string {
     return `{${data}}`;
 }
 
-
-export function generate(ast: AstElement): string {
-    let res = ast ? "_c(" : "_c('div')";
+const genElement = function (ast: AstElement): string {
+    let res = "_c(";
     if (ast.tag) {
         res += `"${ast.tag}",`
     } else {
@@ -101,4 +100,16 @@ export function generate(ast: AstElement): string {
     res += `${genData(ast)},`;
 
     return res.slice(0, -1) + ')';
+}
+
+export function generate(ast: AstElement): string {
+    if (!ast) {
+        return "_c('div')";
+    }
+
+    if (ast.if) {
+        return `${ast.if} ? ${genElement(ast)} : _c("",[],{})`
+    } else {
+        return genElement(ast);
+    }
 }

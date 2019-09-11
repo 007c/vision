@@ -1,6 +1,7 @@
 import { patch, Patch, PatchType } from './patch';
 import { Vnode, render } from './vnode';
 import { bindListener } from "./utils";
+import Vision from './index';
 
 function getParent(patch: Patch): HTMLElement | Node | null {
     if (patch.parentVNode) {
@@ -20,7 +21,31 @@ function insert(parentNode: HTMLElement | Node, patch: Patch) {
 }
 
 function remove(parent: HTMLElement | Node, patch: Patch) {
+    if (patch.oldVnode.isComponent) {
+        return invokeComponentDestroy(parent as HTMLElement, patch.oldVnode.parentComponent, patch.oldVnode.componentInstance);
+    }
     parent.removeChild(patch.oldVnode.elm);
+}
+
+function invokeComponentDestroy(parent: HTMLElement, parentComponent: Vision, component: Vision) {
+    const child = parentComponent.$children;
+    for (let i = 0; i < child.length; i++) {
+        if (child[i] === component) {
+            child.splice(i, 1);
+            break;
+        }
+    }
+    const componentChild = component._vnode.children;
+    component.update(parent, null);
+    for (const children of componentChild) {
+        if (children.isComponent) {
+            invokeComponentDestroy(component.$el, component, children.componentInstance);
+        }
+    }
+
+    if (component.$options.destroyed) {
+        component.$options.destroyed();
+    }
 }
 
 function inserBefore(parent: HTMLElement | Node, patch: Patch) {

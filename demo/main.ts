@@ -1,13 +1,13 @@
 import Vision from '../src/index'
 
-var html = `<div vi-class="className + 'aaa'" *click="changeName" class="hahaha">
+var html = `<div vi-class="className + 'aaa'" *click="toggleTest" class="hahaha">
                 <input type="text" *input="onClassNameChange" vi-value="className">
                 {{className}}
                 <textarea name="" id="" cols="30" rows="10"></textarea>
                 <br><br><br>
                 <span>{{num}}{{person.name}}</span>
                     my name is{{name}}
-                <test *nameChange="onNameChange"></test>
+                <test vi-if="showTest" *nameChange="onNameChange"></test>
             </div>`
 
 
@@ -17,6 +17,7 @@ const vision = new Vision({
     template: html,
     data() {
         return {
+            showTest: true,
             className: "city",
             name: 'zzp',
             num: 15,
@@ -51,6 +52,9 @@ const vision = new Vision({
                         //     this.date = new Date().toLocaleTimeString();
                         //     this.person.name = Math.floor(Math.random() * 10)
                         // }, 300)
+                    },
+                    destroyed() {
+                        console.log('time Destroyed')
                     }
                 }
             },
@@ -65,14 +69,20 @@ const vision = new Vision({
                 },
             },
             mounted() {
-                this.$on('nameChange', ()=> {
+                this.$on('nameChange', () => {
                     console.log('test component emit event "nameChange"')
                 })
                 console.log("test mounted")
+            },
+            destroyed() {
+                console.log('test Destroyed')
             }
         },
     },
     methods: {
+        toggleTest() {
+            this.showTest = !this.showTest;
+        },
         onNameChange(newName: string) {
             console.log(newName)
         },

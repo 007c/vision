@@ -63,7 +63,7 @@ export function createVnode(
         events: Dict<EventListener>,
     }
 ): Vnode {
-    const { attrs = undefined, text = undefined, events = undefined } = data || {};
+    const { attrs = undefined, text = "", events = undefined } = data || {};
 
     children = normalizeChildren(children);
 

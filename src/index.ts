@@ -75,6 +75,7 @@ export default class Vision extends EventEmitter {
             try {
                 this.update(el, this._render())
             } catch (ex) {
+                console.error("update Error: ", ex.message, ex.stack)
             }
         });
 

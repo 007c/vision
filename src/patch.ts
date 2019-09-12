@@ -71,6 +71,7 @@ function patchChildren(parentVNode: Vnode, oldChildren: Vnode[], newChildren: Vn
             oldChildren[i] && patches.push({
                 type: PatchType.REMOVE,
                 oldVnode: oldChildren[i],
+                parentVNode,
             })
         }
     } else if (newStart <= newEnd) {
@@ -116,7 +117,9 @@ export function patch(parentVNode: Vnode, oldVnode: Vnode | undefined, newVnode:
                 newVnode
             })
         }
-        patchChildren(oldVnode, oldVnode.children, newVnode.children, patches);
+        if (oldVnode.children.length !== 0 || newVnode.children.length !== 0) {
+            patchChildren(oldVnode, oldVnode.children, newVnode.children, patches)
+        }
 
     } else {
 
@@ -126,15 +129,5 @@ export function patch(parentVNode: Vnode, oldVnode: Vnode | undefined, newVnode:
             newVnode,
             oldVnode,
         })
-
-        patches.push({
-            type: PatchType.REMOVE,
-            oldVnode,
-        })
-        patchChildren(oldVnode, oldVnode.children, newVnode.children, patches);
-
     }
-
-
-    // return patches;
 }

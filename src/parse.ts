@@ -152,6 +152,9 @@ export function parse(html: string): AstElement {
 
     function processInnerText(match: string[]) {
         const [matched, text] = match;
+        if(!text) {
+            return;
+        }
         html = html.slice(text.length);
         let textEl = createAstElement(null, text);
         if (parent) {

@@ -9,7 +9,7 @@ var html = `<div>
                 dynamic name is {{name}}
                 <h3>vi-if directive</h3>
                 <p vi-if="showTest">i am the test Text for vi-if!</p>
-                <button *click="toggleTest">ToggleTest</button>
+                <p><button *click="toggleTest">ToggleTest</button></p>
                <h3>child Component</h3>
                <test></test>
                <h3>component event</h3>
@@ -19,7 +19,7 @@ var html = `<div>
 
 
 const app: HTMLElement = document.getElementById("app")
-
+const names = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
 const vision = new Vision({
     template: html,
     data() {
@@ -29,7 +29,7 @@ const vision = new Vision({
             name: 'zzp',
             num: 15,
             person: { name: 'ehahah', diss: { a: 1 } },
-            names: ["a", "b", "c", "d", "e", "f", "g", "h", "i"],
+            names,
             time: "",
         }
     },
@@ -43,9 +43,9 @@ const vision = new Vision({
                 }
             },
             mounted() {
-                setInterval(() => {
-                    this.$emit('timechanged', new Date().toLocaleTimeString());
-                }, 300)
+                // setInterval(() => {
+                //     this.$emit('timechanged', new Date().toLocaleTimeString());
+                // }, 300)
             },
             destroyed() {
                 console.log('time Destroyed')
@@ -110,6 +110,10 @@ const vision = new Vision({
     },
     mounted() {
         console.log("root mounted")
+        setInterval(() => {
+            let random = 3 + Math.floor((Math.random() * names.length - 3));
+            this.names = names.slice(random)
+        }, 3000)
     }
 });
 

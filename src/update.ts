@@ -55,11 +55,24 @@ function inserBefore(parent: HTMLElement | Node, patch: Patch) {
     parent.insertBefore(patch.newVnode.elm, patch.oldVnode.elm);
 }
 
+function updateComponentProps(oldAttrs: Dict<any>, newAttrs: Dict<any>, props: Dict<any>) {
+    const propKeys =  Object.keys(props)
+    for (const key of propKeys) {
+        if (props[key] !== newAttrs[key]) {
+            props[key] = newAttrs[key];
+        }
+    }
+}
+
 function updateAttrs(patch: Patch) {
     const { oldVnode, newVnode } = patch;
     if (newVnode.isComponent) {
         // todo 
         // need supply component props and props update
+        const props = newVnode.componentInstance.props
+        if(props) {
+            updateComponentProps(oldVnode.attrs, newVnode.attrs, props);
+        }
         return;
     }
     let node = newVnode.elm;

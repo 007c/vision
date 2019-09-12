@@ -5,6 +5,9 @@ const initData = function (vi: any, data: object | (() => object)) {
     const _data = typeof data === "function" ? data() : data;
     observe(_data);
     for (const key of Object.keys(_data)) {
+        if (vi.hasOwnProperty(key)) {
+            console.error('Property ', key, "has defined on props, please check!")
+        }
         vi[key] = defineProxy(_data[key]);
     }
 }
@@ -26,8 +29,16 @@ const initMethods = function (vi: any) {
     }
 }
 
+const initProps = function (vi: Vision, props: Dict<any>) {
+    vi.props = observe(props);
+}
+
 export function initState(vi: Vision, options: Options) {
     vi._vi = defineProxy(vi);
+
+    if (options.props) {
+        initProps(vi, options.props);
+    }
 
     if (options.data) {
         initData(vi, options.data);

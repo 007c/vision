@@ -21,6 +21,7 @@ export interface Options {
     components?: { [prop: string]: Options };
     mounted?: Function;
     destroyed?: Function;
+    props?: Dict<any>;
 }
 
 const toFunction = function (body: string): Function {
@@ -45,6 +46,7 @@ const mergeOptions = function (options: Options) {
 
 export default class Vision extends EventEmitter {
     _data?: { [prop: string]: ProxyConstructor | any };
+    props?: ProxyConstructor;
     _vi: ProxyConstructor;
     public $el: HTMLElement
     public _vnode: Vnode;

@@ -18,6 +18,9 @@ var html = `<div>
                <h3>component lifeCycle</h3>
                <lifeCycle vi-if="showLifeCycle"></lifeCycle>
                <p><button *click="toggleLifeCycle">ToggleComponent</button></p>
+               <h3>component props</h3>
+                <receiveProps vi-ant="ant"></receiveProps>
+                <p><button *click="changeProps">changeProps</button></p>
             </div>`
 
 
@@ -35,9 +38,14 @@ const vision = new Vision({
             names,
             time: "",
             showLifeCycle: false,
+            ant: 15
         }
     },
     components: {
+        receiveProps: {
+            props: { ant: undefined },
+            template: "<p>i receive props from parent {{props.ant}}</p>"
+        },
         lifeCycle: {
             template: "<span>i am lifeCycle Component!</span>",
             mounted() {
@@ -48,7 +56,8 @@ const vision = new Vision({
             }
         },
         time: {
-            template: "<div style='color: red' ></div>",
+            props: { ant: 1 },
+            template: "<div style='color: red' >{{props.ant}}</div>",
             data() {
                 return {
                     date: new Date().toLocaleTimeString(),
@@ -95,6 +104,9 @@ const vision = new Vision({
         },
     },
     methods: {
+        changeProps() {
+            this.ant = Math.floor(Math.random() * 100);
+        },
         toggleLifeCycle() {
             this.showLifeCycle = !this.showLifeCycle;
         },

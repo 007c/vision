@@ -15,6 +15,9 @@ var html = `<div>
                <h3>component event</h3>
                <time *timechanged="onTimeChanged"></time>
                <span>Time: {{time}}</span>
+               <h3>component lifeCycle</h3>
+               <lifeCycle vi-if="showLifeCycle"></lifeCycle>
+               <p><button *click="toggleLifeCycle">ToggleComponent</button></p>
             </div>`
 
 
@@ -31,9 +34,19 @@ const vision = new Vision({
             person: { name: 'ehahah', diss: { a: 1 } },
             names,
             time: "",
+            showLifeCycle: false,
         }
     },
     components: {
+        lifeCycle: {
+            template: "<span>i am lifeCycle Component!</span>",
+            mounted() {
+                alert("lifeCycle component mounted!")
+            },
+            destroyed() {
+                alert("lifeCycle component destroyed!")
+            }
+        },
         time: {
             template: "<div style='color: red' ></div>",
             data() {
@@ -43,9 +56,9 @@ const vision = new Vision({
                 }
             },
             mounted() {
-                // setInterval(() => {
-                //     this.$emit('timechanged', new Date().toLocaleTimeString());
-                // }, 300)
+                setInterval(() => {
+                    this.$emit('timechanged', new Date().toLocaleTimeString());
+                }, 300)
             },
             destroyed() {
                 console.log('time Destroyed')
@@ -82,6 +95,9 @@ const vision = new Vision({
         },
     },
     methods: {
+        toggleLifeCycle() {
+            this.showLifeCycle = !this.showLifeCycle;
+        },
         onTimeChanged(newTime: string) {
             this.time = newTime;
         },
@@ -110,10 +126,6 @@ const vision = new Vision({
     },
     mounted() {
         console.log("root mounted")
-        setInterval(() => {
-            let random = 3 + Math.floor((Math.random() * names.length - 3));
-            this.names = names.slice(random)
-        }, 3000)
     }
 });
 

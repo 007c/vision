@@ -2,6 +2,7 @@ import { patch, Patch, PatchType } from './patch';
 import { Vnode, render } from './vnode';
 import { bindListener } from "./utils";
 import Vision from './index';
+import { initComponentEvents } from './init'
 
 function getParent(patch: Patch): HTMLElement | Node | null {
     if (patch.parentVNode) {
@@ -15,10 +16,27 @@ function getParent(patch: Patch): HTMLElement | Node | null {
 }
 
 function insert(parentNode: HTMLElement | Node, patch: Patch) {
-    if (parentNode instanceof HTMLElement) {
-        const elm = render(parentNode, patch.newVnode);
-        if (patch.oldVnode) {
-            inserBefore(parentNode, patch);
+    const vnode = patch.newVnode;
+    if (vnode.isComponent) {
+        const child = new Vision(vnode.componentOptions);
+        child.$mount(<HTMLElement>parentNode)
+        initComponentEvents(child, vnode.events);
+        vnode.parentComponent && vnode.parentComponent.$children.push(child);
+        vnode.elm = child.$el;
+        vnode.componentInstance = child;
+        if (child.props) {
+            updateComponentProps(null, vnode.attrs, child.props);
+
+        }
+        return
+    }
+    const elm = render(<HTMLElement>parentNode, patch.newVnode);
+    if (patch.oldVnode) {
+        inserBefore(parentNode, patch);
+    }
+    if (vnode.children.length) {
+        for (const childVnode of vnode.children) {
+            insert(elm, { oldVnode: null, newVnode: childVnode, type: PatchType.INSERT });
         }
     }
 }
@@ -56,7 +74,7 @@ function inserBefore(parent: HTMLElement | Node, patch: Patch) {
 }
 
 function updateComponentProps(oldAttrs: Dict<any>, newAttrs: Dict<any>, props: Dict<any>) {
-    const propKeys =  Object.keys(props)
+    const propKeys = Object.keys(props)
     for (const key of propKeys) {
         if (props[key] !== newAttrs[key]) {
             props[key] = newAttrs[key];
@@ -70,7 +88,7 @@ function updateAttrs(patch: Patch) {
         // todo 
         // need supply component props and props update
         const props = newVnode.componentInstance.props
-        if(props) {
+        if (props) {
             updateComponentProps(oldVnode.attrs, newVnode.attrs, props);
         }
         return;

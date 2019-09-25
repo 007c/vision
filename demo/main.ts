@@ -21,6 +21,9 @@ var html = `<div>
                <h3>component props</h3>
                 <receiveProps vi-ant="ant"></receiveProps>
                 <p><button *click="changeProps">changeProps</button></p>
+                <h3>watch property</h3>
+                <span>{{compuprops}}</span>
+                <p><button *click="changeComputed">changeComputed</button></p>
             </div>`
 
 
@@ -39,6 +42,11 @@ const vision = new Vision({
             time: "",
             showLifeCycle: false,
             ant: 15
+        }
+    },
+    computed: {
+        compuprops() {
+            return this.num + 15;
         }
     },
     components: {
@@ -66,7 +74,7 @@ const vision = new Vision({
             },
             mounted() {
                 setInterval(() => {
-                    this.$emit('timechanged', new Date().toLocaleTimeString());
+                    //this.$emit('timechanged', new Date().toLocaleTimeString());
                 }, 300)
             },
             destroyed() {
@@ -104,6 +112,9 @@ const vision = new Vision({
         },
     },
     methods: {
+        changeComputed() {
+            this.num++;
+        },
         changeProps() {
             this.ant = Math.floor(Math.random() * 100);
         },

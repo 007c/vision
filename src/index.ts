@@ -22,6 +22,8 @@ export interface Options {
     mounted?: Function;
     destroyed?: Function;
     props?: Dict<any>;
+    watch?: Dict<Function>;
+    computed?: Dict<Function>;
 }
 
 const toFunction = function (body: string): Function {
@@ -46,6 +48,7 @@ const mergeOptions = function (options: Options) {
 
 export default class Vision extends EventEmitter {
     _data?: { [prop: string]: ProxyConstructor | any };
+    _computedWatchers?: Dict<Watcher>;
     props?: ProxyConstructor;
     _vi: ProxyConstructor;
     public $el: HTMLElement
@@ -73,7 +76,7 @@ export default class Vision extends EventEmitter {
         const render = toFunction(generate(ast));
         this._render = render;
 
-        new Watcher(this, function () {
+        new Watcher(this, () => {
             try {
                 this.update(el, this._render())
             } catch (ex) {

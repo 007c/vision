@@ -106,22 +106,6 @@ export function cloneVnode(node: Vnode): Vnode {
 }
 
 export function render(parentElm: HTMLElement, vnode: Vnode) {
-
-    if (vnode.isComponent) {
-        const child = new Vision(vnode.componentOptions);
-        child.$mount(parentElm)
-        initComponentEvents(child, vnode.events);
-        vnode.parentComponent && vnode.parentComponent.$children.push(child);
-
-        const childVnode = child._vnode;
-        vnode.attrs = childVnode.attrs;
-        // vnode.children = childVnode.children;
-        vnode.text = childVnode.text;
-        vnode.elm = child.$el;
-        vnode.componentInstance = child;
-        return
-    }
-
     let elm: HTMLElement | Node;
     if (vnode.tag) {
         elm = createElement(vnode);
@@ -129,11 +113,11 @@ export function render(parentElm: HTMLElement, vnode: Vnode) {
         elm = createTextNode(vnode);
     }
 
-    if (elm instanceof HTMLElement) {
-        for (let child of vnode.children) {
-            render(elm, child);
-        }
-    }
+    // if (elm instanceof HTMLElement) {
+    //     for (let child of vnode.children) {
+    //         render(elm, child);
+    //     }
+    // }
     if (elm) {
         vnode.elm = elm;
         parentElm.appendChild(elm);

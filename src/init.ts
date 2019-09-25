@@ -1,6 +1,7 @@
 
 import Vision, { Options } from "./index";
 import { defineProxy, observe } from './observe';
+import { Watcher } from "./watcher";
 const initData = function (vi: any, data: object | (() => object)) {
     const _data = typeof data === "function" ? data() : data;
     observe(_data);
@@ -33,6 +34,25 @@ const initProps = function (vi: Vision, props: Dict<any>) {
     vi.props = observe(props);
 }
 
+const initComputed = function (vi: Vision, computed: Dict<Function>) {
+    const keys = Object.keys(computed);
+    const computedWatchers = vi._computedWatchers || (vi._computedWatchers = {})
+    for (const key of keys) {
+        computedWatchers[key] = new Watcher(vi, computed[key], { lazy: true });
+        Object.defineProperty(vi, key, {
+            get() {
+                const watcher = computedWatchers[key];
+                if(watcher.dirty) {
+                    console.log('run watcher evaluate!')
+                    watcher.evaluate();
+                }
+
+                return watcher.value
+            }
+        })
+    }
+}
+
 export function initState(vi: Vision, options: Options) {
     vi._vi = defineProxy(vi);
 
@@ -46,6 +66,10 @@ export function initState(vi: Vision, options: Options) {
 
     if (options.methods) {
         initMethods(vi)
+    }
+
+    if (options.computed) {
+        initComputed(vi, options.computed);
     }
 }
 

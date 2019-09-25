@@ -5,6 +5,7 @@ let uid = 0;
 
 export interface WatcherOptions {
     lazy?: boolean
+    dirty?: boolean
 }
 
 
@@ -59,24 +60,31 @@ const queueWatcher = function (watcher: Watcher) {
 
 export class Watcher {
     id: number;
-    private value: any;
-    private lazy: boolean = true;
+    public value: any;
+    private lazy: boolean = false;
+    public dirty: boolean = false;
+    private sync: boolean = false;
     constructor(private vi: Vision, private getter: Function, options?: WatcherOptions) {
         if (options) {
             this.lazy = options.lazy;
+            this.dirty = options.lazy;
         }
         this.id = uid++;
-        this.value = this.get();
+        this.value = this.lazy ? undefined : this.get();
     }
 
     get() {
         pushTarget(this);
-        const value = this.getter.call(this.vi);
+        const value = this.getter.call(this.vi._vi);
         popTarget();
         return value;
     }
     update() {
-        if (!this.lazy) {
+        if (this.lazy) {
+            return this.dirty = true;
+        }
+
+        if (this.sync) {
             this.run();
         } else {
             queueWatcher(this);
@@ -88,5 +96,9 @@ export class Watcher {
         } catch (ex) {
             console.error(ex.message);
         }
+    }
+    evaluate() {
+        this.value = this.get();
+        this.dirty = false;
     }
 }

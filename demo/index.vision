@@ -1,0 +1,59 @@
+<template>
+    <div>
+        <h3>event binding</h3>
+        <input type="text" *input="onClassNameChange" vi-value="className" />
+        {{className}}
+        <h3>vi-for directive</h3>
+        <p vi-key="name" vi-for="(name, index) in names">{{index}}、 vi-for name is {{name}}</p>
+        <h3>dynamic Text binding</h3>
+        dynamic name is {{name}}
+        <h3>vi-if directive</h3>
+        <p vi-if="showTest">i am the test Text for vi-if!</p>
+        <p>
+            <button *click="toggleTest">ToggleTest</button>
+        </p>
+        <h3>child Component</h3>
+        <test></test>
+        <h3>component event</h3>
+        <time *timechanged="onTimeChanged"></time>
+        <span>Time: {{time}}</span>
+        <h3>component lifeCycle</h3>
+        <lifeCycle vi-if="showLifeCycle"></lifeCycle>
+        <p>
+            <button *click="toggleLifeCycle">ToggleComponent</button>
+        </p>
+        <h3>component props</h3>
+        <receiveProps vi-ant="ant"></receiveProps>
+        <p>
+            <button *click="changeProps">changeProps</button>
+        </p>
+        <h3>watch property</h3>
+        <span>{{compuprops}}</span>
+        <p>
+            <button *click="changeComputed">changeComputed</button>
+        </p>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                showTest: true,
+                className: "city",
+                name: 'zzp',
+                num: 15,
+                person: { name: 'ehahah', diss: { a: 1 } },
+                names,
+                time: "",
+                showLifeCycle: false,
+                ant: 15
+            }
+        },
+        computed: {
+            compuprops() {
+                return this.num + 15;
+            }
+        }
+    }
+</script>

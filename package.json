@@ -9,9 +9,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "escodegen": "^1.12.0",
+    "esprima": "^4.0.1",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7"
+  },
+  "dependencies": {
+    "@types/escodegen": "0.0.6",
+    "@types/esprima": "^4.0.2"
   }
 }

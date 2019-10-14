@@ -19,7 +19,7 @@ var html = `<div>
                <lifeCycle vi-if="showLifeCycle"></lifeCycle>
                <p><button *click="toggleLifeCycle">ToggleComponent</button></p>
                <h3>component props</h3>
-                <receiveProps vi-ant="ant"></receiveProps>
+                <receiveProps vi-ant="ant"><span>i am slot</span></receiveProps>
                 <p><button *click="changeProps">changeProps</button></p>
                 <h3>watch property</h3>
                 <span>{{compuprops}}</span>
@@ -52,7 +52,7 @@ const vision = new Vision({
     components: {
         receiveProps: {
             props: { ant: undefined },
-            template: "<p>i receive props from parent {{props.ant}}</p>"
+            template: "<p>i receive props from parent {{props.ant}} <slot></slot></p>"
         },
         lifeCycle: {
             template: "<span>i am lifeCycle Component!</span>",

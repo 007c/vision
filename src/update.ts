@@ -19,6 +19,8 @@ function insert(parentNode: HTMLElement | Node, patch: Patch) {
     const vnode = patch.newVnode;
     if (vnode.isComponent) {
         const child = new Vision(vnode.componentOptions);
+        child.$parent = vnode.parentComponent;
+        child.$slots = vnode.children;
         child.$mount(<HTMLElement>parentNode)
         initComponentEvents(child, vnode.events);
         vnode.parentComponent && vnode.parentComponent.$children.push(child);

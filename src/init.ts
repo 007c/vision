@@ -43,7 +43,6 @@ const initComputed = function (vi: Vision, computed: Dict<Function>) {
             get() {
                 const watcher = computedWatchers[key];
                 if(watcher.dirty) {
-                    console.log('run watcher evaluate!')
                     watcher.evaluate();
                 }
 

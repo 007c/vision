@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
     entry: "./demo/main.ts",
     resolve: {
@@ -8,7 +9,11 @@ module.exports = {
             {
                 test: /\.ts$/,
                 use: 'ts-loader'
-            }
+            },
+            // {
+            //     test: /\.vision$/,
+            //     use: path.resolve('vision-loader/index.js')
+            // }
         ]
     },
     mode: "development"

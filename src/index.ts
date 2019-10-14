@@ -6,7 +6,7 @@ import { createVnode, Vnode, createListVnode, createEmptyVNode } from "./vnode";
 import { Watcher } from "./watcher";
 import { initState } from './init'
 import EventEmitter from "./event-emitter";
-
+import slot from './components/slot';
 
 
 declare global {
@@ -14,7 +14,7 @@ declare global {
 }
 
 export interface Options {
-    template: string;
+    template?: string;
     render?: Function;
     data?: (() => object) | object;
     methods?: { [prop: string]: Function };
@@ -26,13 +26,16 @@ export interface Options {
     computed?: Dict<Function>;
 }
 
-const toFunction = function (body: string): Function {
+export const toFunction = function (body: string): Function {
     return new Function(`with(this._vi){return ${body}}`);
 }
 
 
-const mergeOptions = function (options: Options) {
-    const keys = Object.keys(options);
+const mergeOptions = function (components: Dict<Options>, options: Options) {
+    options.components = {
+        ...components,
+        ...options.components
+    }
     return {
         ...options
     }
@@ -40,7 +43,9 @@ const mergeOptions = function (options: Options) {
 
 
 
-
+export function installGlobalComponent(name: string, componentOptions: Options) {
+    Vision.components[name] = componentOptions;
+}
 
 
 
@@ -56,9 +61,12 @@ export default class Vision extends EventEmitter {
     private _render: Function;
     public $children: Vision[] = [];
     $options: Options;
+    $parent?: Vision;
+    $slots: Vnode[];
+    static components: Dict<Options> = {};
     constructor(options: Options) {
         super();
-        this.$options = mergeOptions(options);
+        this.$options = mergeOptions(Vision.components, options);
         this.init(options);
     }
 
@@ -73,12 +81,13 @@ export default class Vision extends EventEmitter {
     $mount(el: HTMLElement) {
         const options = this.$options;
         const ast = parse(options.template);
-        const render = toFunction(generate(ast));
+        const render = options.render || toFunction(generate(ast));
+        console.log(options.render)
         this._render = render;
 
         new Watcher(this, () => {
             try {
-                this.update(el, this._render())
+                this.update(el, this._render(this._c));
             } catch (ex) {
                 console.error("update Error: ", ex.message, ex.stack)
             }
@@ -90,3 +99,5 @@ export default class Vision extends EventEmitter {
 
     }
 }
+
+installGlobalComponent('slot', slot);

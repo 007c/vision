@@ -1,6 +1,5 @@
 import { createTextNode, createElement } from './utils';
 import Vision, { Options } from "./index";
-import { initComponentEvents } from "./init";
 export interface Vnode {
     tag?: string;
     attrs?: Dict<string>;
@@ -51,6 +50,15 @@ const normalizeChildren = function (children: Vnode[]) {
 
 export function createEmptyVNode(): null {
     return null;
+}
+
+export interface createVnode {
+    (tag: string, children?: Vnode[], data?: {
+        attrs: Dict<string>,
+        key: number,
+        text: string,
+        events: Dict<EventListener>,
+    }): Vnode
 }
 
 export function createVnode(

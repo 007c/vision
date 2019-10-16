@@ -28,7 +28,9 @@ function insert(parentNode: HTMLElement | Node, patch: Patch) {
         vnode.componentInstance = child;
         if (child.props) {
             updateComponentProps(null, vnode.attrs, child.props);
-
+        }
+        if (patch.oldVnode) {
+            inserBefore(parentNode, patch);
         }
         return
     }

@@ -40,7 +40,7 @@ const vision = new Vision({
             person: { name: 'ehahah', diss: { a: 1 } },
             names,
             time: "",
-            showLifeCycle: false,
+            showLifeCycle: true,
             ant: 15
         }
     },
